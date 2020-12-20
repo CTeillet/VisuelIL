@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="sample.Main" />
+    <module name="VisuelIL" />
+    <option name="VM_PARAMETERS" value="--module-path ${JAVAFX} --add-modules javafx.controls,javafx.fxml,javafx.graphics" />
+    <RunnerSettings RunnerId="Run" />
+    <ConfigurationWrapper RunnerId="Run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
