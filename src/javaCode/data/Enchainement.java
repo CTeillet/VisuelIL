@@ -29,4 +29,10 @@ public class Enchainement {
     public List<Objet> getCondition() {
         return condition;
     }
+
+    @Override
+    public String toString() {
+        //if(condition.size()>0) res.append(", ")
+        return "Enchainement " + depart + " - " + arrive;
+    }
 }

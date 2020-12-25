@@ -33,5 +33,8 @@ public class Livre {
         return titre;
     }
 
-
+    @Override
+    public String toString() {
+        return "Livre : " + titre;
+    }
 }

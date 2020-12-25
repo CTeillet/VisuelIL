@@ -1,10 +1,15 @@
 package javaCode.view;
 
+import javaCode.data.Enchainement;
 import javaCode.data.GestionnaireLivre;
+import javaCode.data.Objet;
 import javaCode.data.Section;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.text.TextFlow;
 import javafx.util.Pair;
 
 import java.util.Optional;
@@ -13,6 +18,12 @@ public class Controller {
     private GestionnaireLivre lv = new GestionnaireLivre();
     private CustomDialog cd = new CustomDialog(this);
     private Test t = new Test(this);
+
+    @SuppressWarnings("rawtypes")
+    @FXML
+    private TreeView tree;
+    @FXML
+    private TextFlow textFlow;
 
 
 
@@ -59,6 +70,7 @@ public class Controller {
         }else {
             Optional<Pair<Integer, String>> result = cd.customSection().showAndWait();
             result.ifPresent(integerStringPair -> lv.addSection(integerStringPair.getKey(), integerStringPair.getValue()));
+            createTreeView();
         }
     }
     @FXML
@@ -74,6 +86,52 @@ public class Controller {
             }
         }
     }
+
+    @SuppressWarnings("rawtypes")
+    private void createTreeView(){
+        //Racine de l'arbre
+        TreeItem root;
+        root = new TreeItem(getLv().getLv());
+
+        //Section des Sections :
+        for(Section section : getLv().getAllSections()){
+            setTreeItem(root, section);
+        }
+
+        //Ajout de la racine au TreeView
+        tree.setRoot(root);
+    }
+
+
+    private void setTreeItem(TreeItem treeItem, Section section){
+        TreeItem sect = new TreeItem(section);
+
+
+        //Ajouts des enchainements à l'arbre
+        if(section.getEnchainements().size()>0) {
+            TreeItem ench = new TreeItem("Enchainements");
+            for (Enchainement enchainement : section.getEnchainements()) {
+                TreeItem enchT = new TreeItem(enchainement);
+                ench.getChildren().add(enchT);
+            }
+            sect.getChildren().add(ench);
+        }
+
+        if(section.getObjets().size()>0) {
+            TreeItem objs = new TreeItem("Objets");
+            for (Objet objet : section.getObjets()) {
+                TreeItem objT = new TreeItem(objet);
+                objs.getChildren().add(objT);
+            }
+            sect.getChildren().add(objs);
+        }
+        treeItem.getChildren().add(sect);
+    }
+
+
+
+
+
 
 
 }

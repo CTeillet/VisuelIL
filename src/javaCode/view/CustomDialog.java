@@ -84,8 +84,9 @@ public class CustomDialog {
         Node loginButton = dialog.getDialogPane().lookupButton(ButtonType.FINISH);
         loginButton.setDisable(true);
 
-        loginButton.disableProperty().bind(Bindings.or(cbArrive.getSelectionModel().selectedIndexProperty().isEqualTo(-1), cbDepart.getSelectionModel().selectedIndexProperty().isEqualTo(-1)));
-
+        loginButton.disableProperty().bind(Bindings.or(cbDepart.getSelectionModel().selectedIndexProperty().isEqualTo(-1),
+                Bindings.or(cbArrive.getSelectionModel().selectedIndexProperty().isEqualTo(-1),
+                        cbArrive.getSelectionModel().selectedIndexProperty().isEqualTo(cbDepart.getSelectionModel().selectedIndexProperty()))));
         return dialog;
     }
 
@@ -147,7 +148,7 @@ public class CustomDialog {
         problemeValeur.visibleProperty().bind(isValidNumber);
 
         grid.add(problemeValeur, 2,0);
-        isValidNumber.setValue(false);
+        isValidNumber.setValue(true);
 
         txNumero.textProperty().addListener((observableValue, s, t1) -> {
             try{

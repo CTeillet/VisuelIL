@@ -40,13 +40,13 @@
         <VBox HBox.hgrow="ALWAYS">
             <Label text="Explorer" />
             <Separator />
-            <TreeView prefWidth="0.0" />
+            <TreeView fx:id="tree" prefWidth="0.0" />
         </VBox>
         <Separator orientation="VERTICAL" />
         <VBox HBox.hgrow="ALWAYS">
             <Label text="Titre" />
             <Separator />
-            <TextFlow minHeight="200.0" />
+            <TextFlow fx:id="textFlow" minHeight="200.0" />
         </VBox>
         <Separator orientation="VERTICAL" prefHeight="200.0" />
         <VBox HBox.hgrow="ALWAYS">
