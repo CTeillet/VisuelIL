@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javaCode.view.Controller">
     <MenuBar minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT">
         <Menu mnemonicParsing="false" text="Fichier">
             <MenuItem mnemonicParsing="false" text="Charger Livre" />
@@ -28,10 +28,10 @@
         <padding>
             <Insets left="5.0" right="5.0" />
         </padding>
-        <Button mnemonicParsing="false" text="Créer Objet" />
-        <Button mnemonicParsing="false" text="Créer Enchainement" />
-        <Button mnemonicParsing="false" text="Créer Section" />
-        <Button mnemonicParsing="false" text="Créer Livre" />
+        <Button mnemonicParsing="false" onAction="#createLivre" text="Créer Livre" />
+        <Button mnemonicParsing="false" onAction="#createSection" text="Créer Section" />
+        <Button mnemonicParsing="false" onAction="#createObjet" text="Créer Objet" />
+        <Button mnemonicParsing="false" onAction="#createEnchainement" text="Créer Enchainement" />
         <Button mnemonicParsing="false" text="Trouver Sections Inatteignables" />
         <Button mnemonicParsing="false" text="Générer Graphe" />
     </HBox>

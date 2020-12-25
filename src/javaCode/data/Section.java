@@ -19,7 +19,7 @@ public class Section {
         return enchainements.add(enchainement);
     }
 
-    public boolean add(Section depart, Section arrive, Objet... objs) {
+    public boolean add(Section depart, Section arrive, List<Objet> objs) {
         Enchainement temp = new Enchainement(depart, arrive, objs);
         return enchainements.add(temp);
     }
@@ -43,6 +43,10 @@ public class Section {
 
     public List<Enchainement> getEnchainements() {
         return enchainements;
+    }
+
+    public List<Objet> getObjets() {
+        return objets;
     }
 
     @Override

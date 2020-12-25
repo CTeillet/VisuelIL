@@ -13,11 +13,9 @@ public class Enchainement {
         this.arrive = arrive;
     }
 
-    public Enchainement(Section depart, Section arrive, Objet ... objs) {
+    public Enchainement(Section depart, Section arrive, List<Objet> objs) {
         this(depart, arrive);
-        for (Objet o : objs){
-            condition.add(o);
-        }
+        condition.addAll(objs);
     }
 
     public Section getArrive() {
