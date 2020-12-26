@@ -64,8 +64,8 @@ public class GestionnaireLivre {
 
     public List<Section> getAllSections() {
         List<Section> res = new ArrayList<>();
-        res.add(lv.getDepart());
-        res.addAll(lv.getSections());
+        if(lv.getDepart()!=null)res.add(lv.getDepart());
+        if(lv.getSections().size()>0)res.addAll(lv.getSections());
         return res;
     }
 
@@ -85,5 +85,13 @@ public class GestionnaireLivre {
 
     public Livre getLv() {
         return lv;
+    }
+
+    public boolean verifSectionNumber(int test){
+        if(lv.getDepart()==null && lv.getSections().size()==0)return true;
+        for(Section section : getAllSections()){
+            if(section.getNumero()==test) return false;
+        }
+        return true;
     }
 }

@@ -152,8 +152,9 @@ public class CustomDialog {
 
         txNumero.textProperty().addListener((observableValue, s, t1) -> {
             try{
-                Integer temp = Integer.parseInt(t1);
-                isValidNumber.setValue(false);
+                int temp = Integer.parseInt(t1);
+                boolean resTest =  !c.getLv().verifSectionNumber(temp);
+                isValidNumber.setValue(resTest);
                 //if(txTexte.getText()!="") loginButton.setDisable(false);
             }catch(Exception e){
                 txNumero.setPromptText("");
@@ -250,15 +251,6 @@ public class CustomDialog {
         alert.setHeaderText("Attention à ce que vous faites");
         alert.setContentText(txt);
         return alert;
-    }
-
-    private boolean verifChampNumero(TextField tx){
-        try{
-            Integer.parseInt(tx.getText());
-            return true;
-        }catch(Exception e){
-            return false;
-        }
     }
 
 }

@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.TextFlow;
 import javafx.util.Pair;
 
@@ -17,13 +18,14 @@ import java.util.Optional;
 public class Controller {
     private GestionnaireLivre lv = new GestionnaireLivre();
     private CustomDialog cd = new CustomDialog(this);
-    private Test t = new Test(this);
 
     @SuppressWarnings("rawtypes")
     @FXML
     private TreeView tree;
     @FXML
     private TextFlow textFlow;
+    @FXML
+    private ImageView imView;
 
 
 
@@ -33,14 +35,17 @@ public class Controller {
 
     @FXML
     private void createEnchainement(ActionEvent actionEvent){
-        if(!t.verifLivre()){
+        if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else{
-            if(t.verifSections(2)){
+            if(verifSections(2)){
                 cd.errorDialog("Il faut au moins deux sections pour créer un enchainement").showAndWait();
             }else{
                 Optional<Result3> result = cd.customEnchainement().showAndWait();
-                result.ifPresent(result3 -> lv.addEnchainement(result3.getFirst(), result3.getSnd(), result3.getTrd()));
+                result.ifPresent(result3 -> {
+                    lv.addEnchainement(result3.getFirst(), result3.getSnd(), result3.getTrd());
+                    createTreeView();
+                });
             }
 
         }
@@ -49,23 +54,31 @@ public class Controller {
 
     @FXML
     private void createLivre(ActionEvent actionEvent){
-        if(t.verifLivre()){
+        if(verifLivre()){
             Optional<ButtonType> result;
             result = cd.confirmationDialog("Etes vous sures de vouloir écraser le livre existant ?")
                     .showAndWait();
             if(result.isPresent() && result.get() == ButtonType.OK){
                 Optional<String> res = cd.customLivre().showAndWait();
-                res.ifPresent(s -> lv.createNewLivre(s));
+                res.ifPresent(s ->{
+                    lv.createNewLivre(s);
+                    createTreeView();
+                });
+
             }
         }else{
             Optional<String> res = cd.customLivre().showAndWait();
-            res.ifPresent(s -> lv.createNewLivre(s));
+            res.ifPresent(s -> {
+                lv.createNewLivre(s);
+                createTreeView();
+            });
+
         }
     }
 
     @FXML
     private void createSection(ActionEvent actionEvent){
-        if(!t.verifLivre()){
+        if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else {
             Optional<Pair<Integer, String>> result = cd.customSection().showAndWait();
@@ -75,14 +88,15 @@ public class Controller {
     }
     @FXML
     private void createObjet(ActionEvent actionEvent) {
-        if(!t.verifLivre()){
+        if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else {
-            if(t.verifSections(1)){
+            if(verifSections(1)){
                 cd.errorDialog("Une section est nécessaire pour créer un Objet").showAndWait();
             }else {
                 Optional<Pair<String, Section>> result = cd.customObjet().showAndWait();
                 result.ifPresent(stringSectionPair -> lv.addObjet(stringSectionPair.getKey(), stringSectionPair.getValue()));
+                createTreeView();
             }
         }
     }
@@ -128,7 +142,13 @@ public class Controller {
         treeItem.getChildren().add(sect);
     }
 
+    private boolean verifLivre(){
+        return !(getLv().getLv() == null);
+    }
 
+    private boolean verifSections(int nb) {
+        return getLv().getAllSections().size() < nb;
+    }
 
 
 
