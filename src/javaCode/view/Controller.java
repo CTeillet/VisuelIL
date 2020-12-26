@@ -1,23 +1,24 @@
 package javaCode.view;
 
-import javaCode.data.Enchainement;
-import javaCode.data.GestionnaireLivre;
-import javaCode.data.Objet;
-import javaCode.data.Section;
+import javaCode.data.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.*;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Controller {
     private GestionnaireLivre lv = new GestionnaireLivre();
     private CustomDialog cd = new CustomDialog(this);
+    private int TAILLETEXTE = 18;
 
     @SuppressWarnings("rawtypes")
     @FXML
@@ -26,6 +27,8 @@ public class Controller {
     private TextFlow textFlow;
     @FXML
     private ImageView imView;
+    @FXML
+    private Label labTexte;
 
 
 
@@ -114,6 +117,103 @@ public class Controller {
 
         //Ajout de la racine au TreeView
         tree.setRoot(root);
+        tree.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
+            if(t1!=null){
+                Object temp = ((TreeItem)t1).getValue();
+                if(temp instanceof Enchainement){
+                    Enchainement ench = (Enchainement) temp;
+                    labTexte.setText(ench.toString());
+                    //Creation des Textes
+                    Text tx = new Text("Section de départ : ");
+                    tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                    Text tx1 = new Text(ench.getDepart()+"\n");
+                    tx1.setFont(Font.font("Helvetica", TAILLETEXTE));
+                    Text tx2 = new Text("Section d'arrivée : ");
+                    tx2.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                    Text tx3 = new Text(ench.getArrive()+"\n");
+                    tx3.setFont(Font.font("Helvetica", TAILLETEXTE));
+                    Text tx4 = new Text("Condition : \n");
+                    tx4.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                    if(ench.getCondition().size()==0){
+                        Text tx5 = new Text("Aucune\n");
+                        tx5.setFont(Font.font("Helvetica", TAILLETEXTE));
+
+                        //Ajout des Textes au TextFlow
+                        textFlow.getChildren().setAll(tx, tx1, tx2, tx3, tx4, tx5);
+                    }else{
+                        textFlow.getChildren().setAll(tx, tx1, tx2, tx3, tx4);
+                        for(Objet obj : ench.getCondition()){
+                            Text txx = new Text("\t-"+obj+"\n");
+                            txx.setFont(Font.font("Arial", FontPosture.ITALIC, TAILLETEXTE));
+                            textFlow.getChildren().add(txx);
+                        }
+                    }
+
+                }else{
+                    if(temp instanceof  Section){
+                        Section sect = (Section) temp;
+                        labTexte.setText(sect.toString());
+                        int nbObjetsSect = sect.getObjets().size();
+                        int nbEnchainement = sect.getEnchainements().size();
+                        Text tx = new Text("Numéro : ");
+                        tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                        Text tx1 = new Text(sect.getNumero()+"\n");
+                        tx1.setFont(Font.font("Helvetica", TAILLETEXTE));
+                        Text tx2 = new Text("Texte : ");
+                        tx2.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                        Text tx3 = new Text(sect.getTexte()+"\n");
+                        tx3.setFont(Font.font("Helvetica", TAILLETEXTE));
+                        Text tx4 = new Text("Nombre d'objets dans la sections : ");
+                        tx4.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                        Text tx5 = new Text(nbObjetsSect+"");
+                        tx5.setFont(Font.font("Helvetica", TAILLETEXTE));
+                        Text tx6 = new Text("Nombre d'enchainements dans la sections : ");
+                        tx6.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                        Text tx7 = new Text(nbEnchainement+"");
+                        tx7.setFont(Font.font("Helvetica", TAILLETEXTE));
+                        textFlow.getChildren().setAll(tx, tx1, tx2, tx3, tx4, tx5, tx7);
+                    }else{
+                        if(temp instanceof Livre){
+                            Livre lv = (Livre) temp;
+                            labTexte.setText(lv.toString());
+                            int nbSections = 0;
+                            if(lv.getDepart()!=null) nbSections++;
+                            nbSections+=lv.getSections().size();
+                            Text tx = new Text("Titre : ");
+                            tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                            Text tx1 = new Text(lv.getTitre()+"\n");
+                            tx1.setFont(Font.font("Helvetica", TAILLETEXTE));
+                            Text tx2 = new Text("Nombre de Sections : ");
+                            tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                            Text tx3 = new Text(nbSections+"\n");
+                            textFlow.getChildren().setAll(tx, tx1, tx2, tx3);
+                        }else{
+                            if(temp instanceof String){
+                                String str = (String) temp;
+                                labTexte.setText(str);
+                                Text tx = new Text(str);
+                                tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                                textFlow.getChildren().setAll(tx);
+                            }else{
+                                if(temp instanceof Objet){
+                                    Objet obj = (Objet) temp;
+                                    labTexte.setText(obj.toString());
+                                    Text tx = new Text("Nom : ");
+                                    tx.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                                    Text tx1 = new Text(obj.getNom()+"\n");
+                                    tx1.setFont(Font.font("Helvetica", TAILLETEXTE));
+                                    Text tx2 = new Text("Section : ");
+                                    tx2.setFont(Font.font("Helvetica", FontWeight.BOLD, TAILLETEXTE));
+                                    Text tx3 = new Text(obj.getSection()+"\n");
+                                    tx3.setFont(Font.font("Helvetica", TAILLETEXTE));
+                                    textFlow.getChildren().setAll(tx, tx1, tx2, tx3);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
