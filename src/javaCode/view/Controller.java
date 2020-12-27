@@ -1,24 +1,21 @@
 package javaCode.view;
 
 import javaCode.data.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.*;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class Controller {
-    private GestionnaireLivre lv = new GestionnaireLivre();
-    private CustomDialog cd = new CustomDialog(this);
-    private int TAILLETEXTE = 18;
+    private final GestionnaireLivre lv = new GestionnaireLivre();
+    private final Graphe g = new Graphe(lv);
+    private final CustomDialog cd = new CustomDialog(this);
+    private final int TAILLETEXTE = 18;
+    private Set<Section> inatteignables;
 
     @SuppressWarnings("rawtypes")
     @FXML
@@ -29,6 +26,10 @@ public class Controller {
     private ImageView imView;
     @FXML
     private Label labTexte;
+    @FXML
+    private Label labStatus;
+    @FXML
+    private Button toolBut;
 
 
 
@@ -37,7 +38,7 @@ public class Controller {
     }
 
     @FXML
-    private void createEnchainement(ActionEvent actionEvent){
+    private void createEnchainement(){
         if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else{
@@ -48,6 +49,7 @@ public class Controller {
                 result.ifPresent(result3 -> {
                     lv.addEnchainement(result3.getFirst(), result3.getSnd(), result3.getTrd());
                     createTreeView();
+                    refreshLabelStatus();
                 });
             }
 
@@ -56,7 +58,7 @@ public class Controller {
     }
 
     @FXML
-    private void createLivre(ActionEvent actionEvent){
+    private void createLivre(){
         if(verifLivre()){
             Optional<ButtonType> result;
             result = cd.confirmationDialog("Etes vous sures de vouloir écraser le livre existant ?")
@@ -66,6 +68,7 @@ public class Controller {
                 res.ifPresent(s ->{
                     lv.createNewLivre(s);
                     createTreeView();
+                    refreshLabelStatus();
                 });
 
             }
@@ -74,23 +77,25 @@ public class Controller {
             res.ifPresent(s -> {
                 lv.createNewLivre(s);
                 createTreeView();
+                refreshLabelStatus();
             });
-
         }
     }
 
     @FXML
-    private void createSection(ActionEvent actionEvent){
+    private void createSection(){
         if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else {
             Optional<Pair<Integer, String>> result = cd.customSection().showAndWait();
-            result.ifPresent(integerStringPair -> lv.addSection(integerStringPair.getKey(), integerStringPair.getValue()));
+            result.ifPresent(integerStringPair -> lv.addSection(integerStringPair.getKey(),
+                                                                integerStringPair.getValue()));
             createTreeView();
+            refreshLabelStatus();
         }
     }
     @FXML
-    private void createObjet(ActionEvent actionEvent) {
+    private void createObjet() {
         if(!verifLivre()){
             cd.errorDialog("Pas de Livre crée").showAndWait();
         }else {
@@ -100,11 +105,12 @@ public class Controller {
                 Optional<Pair<String, Section>> result = cd.customObjet().showAndWait();
                 result.ifPresent(stringSectionPair -> lv.addObjet(stringSectionPair.getKey(), stringSectionPair.getValue()));
                 createTreeView();
+                refreshLabelStatus();
             }
         }
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void createTreeView(){
         //Racine de l'arbre
         TreeItem root;
@@ -216,7 +222,7 @@ public class Controller {
         });
     }
 
-
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void setTreeItem(TreeItem treeItem, Section section){
         TreeItem sect = new TreeItem(section);
 
@@ -250,7 +256,29 @@ public class Controller {
         return getLv().getAllSections().size() < nb;
     }
 
+    public void refreshLabelStatus(){
+        inatteignables = g.trouverSectionsInatteignables();
+        if(inatteignables.size()==0){
+            labStatus.setText("Aucun problèmes");
+            toolBut.setDisable(true);
+            toolBut.setVisible(false);
+        }else{
+            labStatus.setText("Il y a " + inatteignables.size() + " sections inatteignables");
+            toolBut.setDisable(false);
+            toolBut.setVisible(true);
+        }
+    }
 
+    @FXML
+    private void toolButAction(){
+        if(inatteignables.size()>0){
+            StringBuilder s = new StringBuilder();
+            for(Section sect : inatteignables){
+                s.append("\t- ").append(sect).append("\n");
+            }
+            cd.problemesGraphe(s.toString()).showAndWait();
+        }
+    }
 
 
 

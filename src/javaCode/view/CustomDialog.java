@@ -253,4 +253,11 @@ public class CustomDialog {
         return alert;
     }
 
+    public Alert problemesGraphe(String txt) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Problèmes dans le graphe du livre");
+        alert.setHeaderText("Attention des sections sont actuellement inatteignables");
+        alert.setContentText(txt);
+        return alert;
+    }
 }

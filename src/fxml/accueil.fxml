@@ -33,7 +33,6 @@
         <Button mnemonicParsing="false" onAction="#createSection" text="Créer Section" />
         <Button mnemonicParsing="false" onAction="#createObjet" text="Créer Objet" />
         <Button mnemonicParsing="false" onAction="#createEnchainement" text="Créer Enchainement" />
-        <Button mnemonicParsing="false" text="Trouver Sections Inatteignables" />
         <Button mnemonicParsing="false" text="Générer Graphe" />
     </HBox>
     <Separator prefWidth="200.0" />
@@ -63,7 +62,8 @@
          </ImageView>
         </VBox>
     </HBox>
-    <ToolBar>
-        <Label text="Status" />
+    <ToolBar fx:id="toolBar">
+        <Label fx:id="labStatus" text="Status" />
+      <Button fx:id="toolBut" disable="true" mnemonicParsing="false" onAction="#toolButAction" text="Voir problèmes" visible="false" />
     </ToolBar>
 </VBox>
